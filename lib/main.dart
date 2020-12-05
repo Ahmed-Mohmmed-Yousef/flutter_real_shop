@@ -4,6 +4,7 @@ import 'package:flutter_app/providers/cart.dart';
 import 'package:flutter_app/providers/orders.dart';
 import 'package:flutter_app/providers/product.dart';
 import 'package:flutter_app/providers/products.dart';
+import 'package:flutter_app/screen/auth_screen.dart';
 import 'package:flutter_app/screen/cart_screen.dart';
 import 'package:flutter_app/screen/edit_screen.dart';
 import 'package:flutter_app/screen/oredrs_screen.dart';
@@ -39,8 +40,9 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.pinkAccent,
         fontFamily: GoogleFonts.lato().fontFamily,
       ),
-      initialRoute: ProductOverviewScreen.routeName,
+      initialRoute: AuthScreen.routeName,
       routes: {
+        AuthScreen.routeName: (context) => AuthScreen(),
         SplashScreen.routeName: (context) => SplashScreen(),
         ProductOverviewScreen.routeName: (context) => ProductOverviewScreen(),
         ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
