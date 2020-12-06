@@ -42,7 +42,7 @@ class AuthProvider with ChangeNotifier {
           }));
       final responseData = json.decode(res.body);
       if (responseData['error'] != null) {
-        HttpException(responseData['error']['message']);
+        throw HttpException(responseData['error']['message']);
       }
       _token = responseData['idToken'];
       _userId = responseData['localId'];
@@ -74,13 +74,12 @@ class AuthProvider with ChangeNotifier {
 
   Future<bool> tryAutoLogin() async {
     final prefs = await SharedPreferences.getInstance();
-    if (prefs.containsKey('userData')) return false;
+    if (!prefs.containsKey('userData'))  return false;
     final Map<String, Object> extractedData =
         json.decode(prefs.get('userData')) as Map<String, Object>;
 
     final expiryDate = DateTime.parse(extractedData['Map<String, Object>']);
     if(expiryDate.isBefore(DateTime.now())) return false;
-
     _token = extractedData['token'];
     _userId = extractedData['userId'];
     _expiryDate = expiryDate;

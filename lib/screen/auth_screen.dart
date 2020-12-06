@@ -143,14 +143,14 @@ class _AuthCardState extends State<AuthCard>
             .signUp(_authData['email'], _authData['password']);
       }
     } on HttpException catch (err) {
-      var errorMsg = '';
+      var errorMsg = err.toString();
       if (err.toString() == 'weak-password') {
         errorMsg = 'The password provided is too weak.';
       } else if (err.toString() == 'email-already-in-use') {
         errorMsg = 'The account already exists for that email.';
-      } else if (err.toString() == 'user-not-found') {
+      } else if (err.toString()== 'user-not-found') {
         errorMsg = 'No user found for that email.';
-      } else if (err.toString() == 'wrong-password') {
+      } else if (err.toString()== 'wrong-password') {
         errorMsg = 'Wrong password provided for that user.';
       }
       _showErrorDialog(errorMsg);
@@ -254,8 +254,8 @@ class _AuthCardState extends State<AuthCard>
                         onSaved: isLogin
                             ? null
                             : (val) {
-                                _authData['password'] = val;
-                              },
+                          _authData['password'] = val;
+                        },
                       ),
                     ),
                   ),
@@ -292,16 +292,12 @@ class _AuthCardState extends State<AuthCard>
   }
 
   void _showErrorDialog(String msg) {
-    showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-              title: Text('An error aoccuerd'),
-              content: Text(msg),
-              actions: [
-                FlatButton(
-                    onPressed: () => Navigator.of(ctx).pop(),
-                    child: Text('Oky'))
-              ],
-            ));
+    showDialog(context: context, builder: (ctx) => AlertDialog(
+      title: Text('An error aoccuerd'),
+      content: Text(msg),
+      actions: [
+        FlatButton(onPressed: () => Navigator.of(ctx).pop(), child: Text('Oky'))
+      ],
+    ));
   }
 }
