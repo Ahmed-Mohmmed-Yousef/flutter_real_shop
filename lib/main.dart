@@ -33,24 +33,34 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: Colors.teal,
-        accentColor: Colors.pinkAccent,
-        fontFamily: GoogleFonts.lato().fontFamily,
+    return Consumer<AuthProvider>(
+      builder: (ctx, auth, _) => MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primaryColor: Colors.teal,
+          accentColor: Colors.pinkAccent,
+          fontFamily: GoogleFonts.lato().fontFamily,
+        ),
+        home: auth.isAuth
+            ? ProductOverviewScreen()
+            : FutureBuilder(
+                future: auth.tryAutoLogin(),
+                builder: (BuildContext ctx, AsyncSnapshot snapshot) =>
+                    snapshot.connectionState == ConnectionState.waiting
+                        ? SplashScreen()
+                        : AuthScreen(),
+              ),
+        routes: {
+          AuthScreen.routeName: (context) => AuthScreen(),
+          SplashScreen.routeName: (context) => SplashScreen(),
+          ProductOverviewScreen.routeName: (context) => ProductOverviewScreen(),
+          ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
+          CardScreen.routeName: (context) => CardScreen(),
+          OrderScreen.routeName: (context) => OrderScreen(),
+          UserProductScreen.routeName: (context) => UserProductScreen(),
+          EditScreen.routeName: (context) => EditScreen(),
+        },
       ),
-      initialRoute: AuthScreen.routeName,
-      routes: {
-        AuthScreen.routeName: (context) => AuthScreen(),
-        SplashScreen.routeName: (context) => SplashScreen(),
-        ProductOverviewScreen.routeName: (context) => ProductOverviewScreen(),
-        ProductDetailScreen.routeName: (context) => ProductDetailScreen(),
-        CardScreen.routeName: (context) => CardScreen(),
-        OrderScreen.routeName: (context) => OrderScreen(),
-        UserProductScreen.routeName: (context) => UserProductScreen(),
-        EditScreen.routeName: (context) => EditScreen(),
-      },
     );
   }
 }

@@ -1,8 +1,9 @@
-import 'dart:ffi';
 import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter_app/models/http_exceptions.dart';
+import 'package:flutter_app/providers/auth.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 
 class AuthScreen extends StatelessWidget {
   static const routeName = '/AuthScreen';
@@ -129,10 +130,34 @@ class _AuthCardState extends State<AuthCard>
     if (!_formKey.currentState.validate()) {
       return;
     }
+    _formKey.currentState.save();
     setState(() {
       isLoadin = true;
     });
-    try {} catch (error) {}
+    try {
+      if (isLogin) {
+        await Provider.of<AuthProvider>(context, listen: false)
+            .login(_authData['email'], _authData['password']);
+      } else {
+        await Provider.of<AuthProvider>(context, listen: false)
+            .signUp(_authData['email'], _authData['password']);
+      }
+    } on HttpException catch (err) {
+      var errorMsg = '';
+      if (err.toString() == 'weak-password') {
+        errorMsg = 'The password provided is too weak.';
+      } else if (err.toString() == 'email-already-in-use') {
+        errorMsg = 'The account already exists for that email.';
+      } else if (err.toString() == 'user-not-found') {
+        errorMsg = 'No user found for that email.';
+      } else if (err.toString() == 'wrong-password') {
+        errorMsg = 'Wrong password provided for that user.';
+      }
+      _showErrorDialog(errorMsg);
+    } catch (error) {
+      const errorMsg = 'Error Occured';
+      _showErrorDialog(errorMsg);
+    }
     setState(() {
       isLoadin = false;
     });
@@ -226,9 +251,11 @@ class _AuthCardState extends State<AuthCard>
                                 }
                                 return null;
                               },
-                        onSaved: (val) {
-                          _authData['password'] = val;
-                        },
+                        onSaved: isLogin
+                            ? null
+                            : (val) {
+                                _authData['password'] = val;
+                              },
                       ),
                     ),
                   ),
@@ -262,5 +289,19 @@ class _AuthCardState extends State<AuthCard>
         ),
       ),
     );
+  }
+
+  void _showErrorDialog(String msg) {
+    showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+              title: Text('An error aoccuerd'),
+              content: Text(msg),
+              actions: [
+                FlatButton(
+                    onPressed: () => Navigator.of(ctx).pop(),
+                    child: Text('Oky'))
+              ],
+            ));
   }
 }
