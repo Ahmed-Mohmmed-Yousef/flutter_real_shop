@@ -21,8 +21,8 @@ void main() {
       ChangeNotifierProvider.value(value: AuthProvider()),
       ChangeNotifierProvider.value(value: CartProvider()),
       ChangeNotifierProvider.value(value: OrdersProvider()),
-      ChangeNotifierProvider.value(value: ProductProvider()),
-      ChangeNotifierProvider.value(value: ProductsProvider()),
+      // ChangeNotifierProvider.value(value: Product()),
+      ChangeNotifierProvider.value(value: Products()),
     ],
     builder: (context, child) => MyApp(),
   ));
