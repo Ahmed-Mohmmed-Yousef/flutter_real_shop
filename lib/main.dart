@@ -19,10 +19,24 @@ void main() {
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: AuthProvider()),
-      ChangeNotifierProvider.value(value: CartProvider()),
-      ChangeNotifierProvider.value(value: OrdersProvider()),
+      ChangeNotifierProxyProvider<AuthProvider, Products>(
+        create: (_) => Products(),
+        update: (ctx, authValue, previousProducts) => previousProducts.getData(
+          authValue.token,
+          previousProducts.userId,
+          previousProducts.items ?? [],
+        ),
+      ),
+      ChangeNotifierProvider.value(value: Cart()),
+      ChangeNotifierProxyProvider<AuthProvider, Orders>(
+        create: (_) => Orders(),
+        update: (ctx, authValue, previousOrders) => previousOrders.getData(
+          authValue.token,
+          previousOrders.userId,
+          previousOrders.orders ?? [],
+        ),
+      ),
       // ChangeNotifierProvider.value(value: Product()),
-      ChangeNotifierProvider.value(value: Products()),
     ],
     builder: (context, child) => MyApp(),
   ));
