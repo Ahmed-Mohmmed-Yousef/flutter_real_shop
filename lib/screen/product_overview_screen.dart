@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/providers/auth.dart';
 import 'package:flutter_app/providers/cart.dart';
 import 'package:flutter_app/providers/products.dart';
 import 'package:flutter_app/widget/app_drawer.dart';
@@ -22,18 +21,14 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
   // var _isInit = false;
 
   @override
-  void initState() {
+  void initState()  {
     // TODO: implement initState
     super.initState();
-    load();
-  }
-
-  void load() async {
     _isLoading = true;
     Provider.of<Products>(context, listen: false)
         .fetchAndSetProducts()
-        .then((value) => setState(() => _isLoading = false))
-        .catchError((error) => print(error.toString()));
+        .then((_) => setState(() => _isLoading = false))
+        .catchError((error) => _isLoading = false);
   }
 
   @override
@@ -73,7 +68,11 @@ class _ProductOverviewScreenState extends State<ProductOverviewScreen> {
           ),
         ],
       ),
-      body: _isLoading ? Center(child: CircularProgressIndicator(),) : ProductsGrid(_showOnlyFavorites),
+      body: _isLoading
+          ? Center(
+              child: CircularProgressIndicator(),
+            )
+          : ProductsGrid(_showOnlyFavorites),
       drawer: AppDrawer(),
     );
   }

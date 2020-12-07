@@ -15,22 +15,23 @@ import 'package:flutter_app/screen/user_product_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 
-void main() {
+void main()  {
+  // WidgetsFlutterBinding.ensureInitialized();
   runApp(MultiProvider(
     providers: [
       ChangeNotifierProvider.value(value: AuthProvider()),
       ChangeNotifierProxyProvider<AuthProvider, Products>(
         create: (_) => Products(),
-        update: (ctx, authValue, previousProducts) => previousProducts.getData(
+        update: (ctx, authValue, previousProducts) => previousProducts..getData(
           authValue.token,
-          previousProducts.userId,
-          previousProducts.items ?? [],
+          authValue.userId,
+          previousProducts == null ? null : previousProducts.items,
         ),
       ),
       ChangeNotifierProvider.value(value: Cart()),
       ChangeNotifierProxyProvider<AuthProvider, Orders>(
         create: (_) => Orders(),
-        update: (ctx, authValue, previousOrders) => previousOrders.getData(
+        update: (ctx, authValue, previousOrders) => previousOrders..getData(
           authValue.token,
           previousOrders.userId,
           previousOrders.orders ?? [],
