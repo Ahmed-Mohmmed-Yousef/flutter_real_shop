@@ -63,6 +63,7 @@ class Products with ChangeNotifier {
   }
 
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
+    
     final filteredString =
         filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
     var url =
