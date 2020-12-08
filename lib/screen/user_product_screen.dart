@@ -22,7 +22,7 @@ class UserProductScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.add),
             onPressed: () =>
-                Navigator.of(context).pushNamed(EditScreen.routeName),
+                Navigator.of(context).pushNamed(EditProductScreen.routeName),
           )
         ],
       ),
