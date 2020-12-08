@@ -4,12 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app/providers/cart.dart';
 
-class OrderItem {
+class OrderItemModel {
   final String id;
   final double amount;
   final List<CartItem> products;
   final DateTime dateTime;
-  OrderItem({
+  OrderItemModel({
     @required this.id,
     @required this.amount,
     @required this.products,
@@ -18,35 +18,38 @@ class OrderItem {
 }
 
 class Orders with ChangeNotifier {
-  List<OrderItem> _orders = [];
+  List<OrderItemModel> _orders = [];
   String authToken;
   String userId;
 
-  getData(String token, String uid, List<OrderItem> orders) {
+  getData(String token, String uid, List<OrderItemModel> orders) {
     authToken = token;
     userId = uid;
     _orders = orders;
     notifyListeners();
   }
 
-  List<OrderItem> get orders {
+  List<OrderItemModel> get orders {
     return [..._orders];
   }
 
   Future<void> fetchAndSetOrders() async {
+    print('fetchAndSetOrders gooo');
     final url =
         'https://whatsapp-83586.firebaseio.com/real_shop/orders/$userId.json?auth=$authToken';
 
     try {
+      print('try gooo');
       final res = await http.get(url);
       final extractedData = json.decode(res.body) as Map<String, dynamic>;
       if (extractedData == null) {
+        print('extractedData null');
         return;
       }
-      final List<OrderItem> loadedOrders = [];
+      final List<OrderItemModel> loadedOrders = [];
       extractedData.forEach((key, value) {
         loadedOrders.add(
-          OrderItem(
+          OrderItemModel(
             id: key,
             amount: value['amount'],
             products: (value['products'] as List<dynamic>)
@@ -54,7 +57,7 @@ class Orders with ChangeNotifier {
                   (item) => CartItem(
                     id: item['id'],
                     title: item['title'],
-                    quntity: item['quntity'],
+                    quntity: item['quantity'],
                     price: item['price'],
                   ),
                 )
@@ -64,8 +67,10 @@ class Orders with ChangeNotifier {
         );
       });
       _orders = loadedOrders.reversed.toList();
+      print('_orders to loaded ${_orders.length}');
       notifyListeners();
     } catch (e) {
+      print('catch ${e.toString()}');
       throw e;
     }
   }
@@ -92,7 +97,7 @@ class Orders with ChangeNotifier {
       );
       _orders.insert(
         0,
-        OrderItem(
+        OrderItemModel(
           id: json.decode(res.body)['name'],
           amount: total,
           products: cartroducts,
