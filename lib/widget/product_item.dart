@@ -17,7 +17,7 @@ class ProductItem extends StatelessWidget {
       child: GridTile(
         child: GestureDetector(
           onTap: () =>
-              Navigator.of(context).pushNamed(ProductDetailScreen.routeName),
+              Navigator.of(context).pushNamed(ProductDetailScreen.routeName, arguments: product.id),
           child: Hero(
             tag: product.id,
             child: FadeInImage(
