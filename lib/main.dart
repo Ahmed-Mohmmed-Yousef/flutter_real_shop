@@ -33,7 +33,7 @@ void main()  {
         create: (_) => Orders(),
         update: (ctx, authValue, previousOrders) => previousOrders..getData(
           authValue.token,
-          previousOrders.userId,
+          authValue.userId,
           previousOrders.orders ?? [],
         ),
       ),

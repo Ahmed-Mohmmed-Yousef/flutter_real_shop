@@ -79,7 +79,7 @@ class Orders with ChangeNotifier {
         url,
         body: json.encode({
           'amount': total,
-          'dateTime': timeStamp,
+          'dateTime': timeStamp.toIso8601String(),
           'products': cartroducts
               .map((cp) => {
                     'id': cp.id,
