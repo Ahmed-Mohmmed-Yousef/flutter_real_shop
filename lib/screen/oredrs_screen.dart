@@ -15,7 +15,7 @@ class OrderScreen extends StatelessWidget {
         future: Provider.of<Orders>(context, listen: false).fetchAndSetOrders(),
         builder: (ctx, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: FlutterLogo(size: 100));
+            return Center(child: CircularProgressIndicator());
           } else {
             if (snapshot.error != null)
               return Center(child: Text('An error occurred!'));

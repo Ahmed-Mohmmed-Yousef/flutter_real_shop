@@ -64,15 +64,15 @@ class Products with ChangeNotifier {
 
   Future<void> fetchAndSetProducts([bool filterByUser = false]) async {
     final filteredString =
-        filterByUser ? 'orderBy="creatorId"&equalTo="$userId"' : '';
+        filterByUser ? '' : '';//'&orderBy=\'creatorId\'&equalTo=\'$userId\'' : '';
     var url =
-        'https://whatsapp-83586.firebaseio.com/real_shop/products.json?auth=$authToken&$filteredString';
+        'https://whatsapp-83586.firebaseio.com/real_shop/products.json?auth=$authToken$filteredString';
+        print('url: ' + url);
 
     try {
       final res = await http.get(url);
       final extractedData = json.decode(res.body) as Map<String, dynamic>;
       if (extractedData == null) {
-        print("Nulllllllllllll---------" + res.body);
         return;
       }
       url =
@@ -81,8 +81,14 @@ class Products with ChangeNotifier {
       final favData = json.decode(favRes.body) as Map<String, dynamic>;
       final List<Product> loadedProducts = [];
       extractedData.forEach((key, value) {
-        loadedProducts.add(Product.fromMap(value).copyWith(id: key,
+        if(filterByUser) {
+          if(value['creatorId'] == userId)
+            loadedProducts.add(Product.fromMap(value).copyWith(id: key,
             isFavorite: favData == null ? false : favData[key] ?? false));
+        } else {
+          loadedProducts.add(Product.fromMap(value).copyWith(id: key,
+            isFavorite: favData == null ? false : favData[key] ?? false));
+        }
       });
       _items = loadedProducts;
       notifyListeners();
